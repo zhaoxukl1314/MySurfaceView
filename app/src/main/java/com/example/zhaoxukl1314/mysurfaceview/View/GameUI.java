@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -16,6 +17,8 @@ import com.example.zhaoxukl1314.mysurfaceview.R;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by zhaoxukl1314 on 16/11/8.
@@ -29,6 +32,7 @@ public class GameUI extends SurfaceView implements SurfaceHolder.Callback {
     private Man mMan;
     private Smile mSmile;
     private List<Smile> mSmiles;
+    private final MyButton mMyButton;
 
     public GameUI(Context context) {
         super(context);
@@ -36,6 +40,16 @@ public class GameUI extends SurfaceView implements SurfaceHolder.Callback {
         mHolder.addCallback(this);
         mMan = new Man(BitmapFactory.decodeResource(getResources(), R.drawable.avatar_boy), null);
         mSmiles = new CopyOnWriteArrayList<Smile>();
+        Log.d(TAG,"zhaoxu getHeight : " + getHeight());
+        mMyButton = new MyButton(BitmapFactory.decodeResource(getResources(), R.drawable.bottom_default),
+                new Point(200, 1000),
+                BitmapFactory.decodeResource(getResources(),R.drawable.bottom_press));
+        mMyButton.setOnClickListener(new MyButton.OnClickListener() {
+            @Override
+            public void onClick() {
+                mMan.move(Man.DOWN);
+            }
+        });
         mRenderThread = new RenderThread();
     }
 
@@ -59,8 +73,15 @@ public class GameUI extends SurfaceView implements SurfaceHolder.Callback {
         Point touchPoint = new Point((int)event.getX(), (int)event.getY());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mSmile = mMan.createSmile(BitmapFactory.decodeResource(getResources(), R.drawable.rating_small),touchPoint);
-                mSmiles.add(mSmile);
+                Log.d(TAG,"zhaoxu touchpoing: " + touchPoint);
+                Log.d(TAG,"zhaoxu istouch: " + mMyButton.isTouchingButton(touchPoint));
+                if (mMyButton.isTouchingButton(touchPoint)) {
+                    mMyButton.setIsClick(true);
+                    mMyButton.click();
+                } else {
+                    mSmile = mMan.createSmile(BitmapFactory.decodeResource(getResources(), R.drawable.rating_small),touchPoint);
+                    mSmiles.add(mSmile);
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -68,6 +89,9 @@ public class GameUI extends SurfaceView implements SurfaceHolder.Callback {
                 mSmiles.add(mSmile);
                 break;
 
+            case MotionEvent.ACTION_UP:
+                mMyButton.setIsClick(false);
+                break;
         }
     }
 
@@ -107,6 +131,7 @@ public class GameUI extends SurfaceView implements SurfaceHolder.Callback {
                     }
                 }
             }
+            mMyButton.draw(lockCanvas);
         }
     }
 }

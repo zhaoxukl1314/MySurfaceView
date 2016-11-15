@@ -10,6 +10,7 @@ import android.graphics.Point;
 
 public class Man extends Sprit {
 
+    public static final int DOWN = 0;
 
     public Man(Bitmap img, Point pox) {
         super(img, pox);
@@ -19,5 +20,13 @@ public class Man extends Sprit {
         Point point = new Point(mPos.x + 200, mPos.y + 150);
         Smile smile = new Smile(img, point, touchPoint);
         return smile;
+    }
+
+    public void move(int direction) {
+        switch (direction) {
+            case DOWN:
+                mPos.y += 30;
+                break;
+        }
     }
 }

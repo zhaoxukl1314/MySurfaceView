@@ -1,5 +1,6 @@
 package com.example.zhaoxukl1314.mysurfaceview;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -8,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.zhaoxukl1314.mysurfaceview.View.GameUI;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
